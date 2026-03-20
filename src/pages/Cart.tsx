@@ -1,12 +1,27 @@
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (isSignedIn) {
+      navigate("/checkout");
+    } else {
+      // With Clerk, we can redirect or show the sign-in modal.
+      // Since /login is removed, we just use navigate("/") or similar, 
+      // but ideally we should trigger the Clerk sign-in.
+      // For now, let's just go home if not signed in, or we could just let the checkout handle it.
+      navigate("/checkout");
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -122,7 +137,7 @@ const Cart = () => {
                   <span>R{totalPrice.toFixed(2)}</span>
                 </div>
 
-                <Button className="w-full mb-3">Proceed to Checkout</Button>
+                <Button onClick={handleCheckout} className="w-full mb-3">Proceed to Checkout</Button>
                 <Link to="/" className="block">
                   <Button variant="outline" className="w-full">
                     Continue Shopping
