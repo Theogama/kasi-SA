@@ -57,10 +57,6 @@ const Checkout = () => {
     );
   }
 
-  const handlePayfastSubmit = (event: FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true);
-  };
-
   const merchantId = import.meta.env.VITE_PAYFAST_MERCHANT_ID;
   const merchantKey = import.meta.env.VITE_PAYFAST_MERCHANT_KEY;
   const payfastMode = import.meta.env.VITE_PAYFAST_MODE || "live";
@@ -72,6 +68,26 @@ const Checkout = () => {
     : payfastMode === "live"
       ? "https://www.payfast.co.za/eng/process"
       : "https://sandbox.payfast.co.za/eng/process";
+
+  // Debug: Log env vars to verify they're loaded
+  useEffect(() => {
+    console.log("Payfast Config:", {
+      merchantId,
+      merchantKey,
+      payfastMode,
+      baseUrl,
+      payfastUrl,
+    });
+  }, [merchantId, merchantKey, payfastMode, baseUrl, payfastUrl]);
+
+  const handlePayfastSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (!merchantId || !merchantKey) {
+      event.preventDefault();
+      alert("Error: Payfast credentials are not configured. Please contact support.");
+      return;
+    }
+    setIsSubmitting(true);
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -130,6 +146,12 @@ const Checkout = () => {
                 {useSandboxForLocal && (
                   <div className="mb-4 rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
                     Live Payfast is not fully supported on localhost. Using Payfast sandbox for this checkout session.
+                  </div>
+                )}
+
+                {(!merchantId || !merchantKey) && (
+                  <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-900">
+                    ⚠️ Payfast credentials not found. Please restart the dev server or check your .env.local file. Check browser console for details.
                   </div>
                 )}
 
