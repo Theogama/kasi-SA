@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/react";
 import { useCart } from "@/context/CartContext";
@@ -57,15 +57,21 @@ const Checkout = () => {
     );
   }
 
-  const handlePayfastSubmit = () => {
+  const handlePayfastSubmit = (event: FormEvent<HTMLFormElement>) => {
     setIsSubmitting(true);
   };
 
-  const merchantId = "10000100"; // Sandbox merchant ID
-  const merchantKey = "46f0cd694581a"; // Sandbox merchant Key
-
-  const payfastUrl = "https://sandbox.payfast.co.za/eng/process"; 
-  const baseUrl = window.location.origin;
+  const merchantId = import.meta.env.VITE_PAYFAST_MERCHANT_ID;
+  const merchantKey = import.meta.env.VITE_PAYFAST_MERCHANT_KEY;
+  const payfastMode = import.meta.env.VITE_PAYFAST_MODE || "live";
+  const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+  const isLocalHost = baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1");
+  const useSandboxForLocal = payfastMode === "live" && isLocalHost;
+  const payfastUrl = useSandboxForLocal
+    ? "https://sandbox.payfast.co.za/eng/process"
+    : payfastMode === "live"
+      ? "https://www.payfast.co.za/eng/process"
+      : "https://sandbox.payfast.co.za/eng/process";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -120,6 +126,12 @@ const Checkout = () => {
                   <ShieldCheck size={20} className="text-green-600" />
                   <span>Secure payment processed by Payfast</span>
                 </div>
+
+                {useSandboxForLocal && (
+                  <div className="mb-4 rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
+                    Live Payfast is not fully supported on localhost. Using Payfast sandbox for this checkout session.
+                  </div>
+                )}
 
                 <form action={payfastUrl} method="POST" onSubmit={handlePayfastSubmit}>
                   {/* Payfast Required Fields */}
