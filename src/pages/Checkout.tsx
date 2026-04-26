@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/react";
 import { useCart } from "@/context/CartContext";
@@ -43,18 +43,14 @@ const Checkout = () => {
     phone: user?.primaryPhoneNumber?.phoneNumber || ""
   };
 
+  useEffect(() => {
+    if (isLoaded && isSignedIn && items.length === 0) {
+      navigate("/cart");
+    }
+  }, [isLoaded, isSignedIn, items.length, navigate]);
+
   if (items.length === 0) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-32 pb-20 text-center container mx-auto px-6">
-          <h1 className="text-4xl font-heading mb-4">Your Cart is Empty</h1>
-          <p className="text-muted-foreground mb-8">Add items to purchase.</p>
-          <Button onClick={() => navigate("/")} size="lg">Continue Shopping</Button>
-        </div>
-        <Footer />
-      </div>
-    );
+    return null;
   }
 
   const merchantId = import.meta.env.VITE_PAYFAST_MERCHANT_ID;
@@ -68,6 +64,7 @@ const Checkout = () => {
     : payfastMode === "live"
       ? "https://www.payfast.co.za/eng/process"
       : "https://sandbox.payfast.co.za/eng/process";
+  const mPaymentId = useMemo(() => `ORD-${Date.now()}`, []);
 
   // Debug: Log env vars to verify they're loaded
   useEffect(() => {
@@ -159,16 +156,16 @@ const Checkout = () => {
                   {/* Payfast Required Fields */}
                   <input type="hidden" name="merchant_id" value={merchantId} />
                   <input type="hidden" name="merchant_key" value={merchantKey} />
-                  <input type="hidden" name="return_url" value={`${baseUrl}/checkout/success`} />
-                  <input type="hidden" name="cancel_url" value={`${baseUrl}/cart`} />
-                  <input type="hidden" name="notify_url" value={`${baseUrl}/api/payfast/notify`} />
+                  <input type="hidden" name="return_url" value={`${baseUrl}/checkout/success?success=true&m_payment_id=${mPaymentId}`} />
+                  <input type="hidden" name="cancel_url" value={`${baseUrl}/cart?payment_canceled=true`} />
+                  <input type="hidden" name="notify_url" value={`${baseUrl}/api/payment/payfast/notify`} />
                   
                   {/* Customer Details */}
                   <input type="hidden" name="name_first" value={displayUser.firstName} />
                   <input type="hidden" name="name_last" value={displayUser.lastName} />
                   <input type="hidden" name="email_address" value={displayUser.email} />
                   
-                  <input type="hidden" name="m_payment_id" value={`ORD-${Date.now()}`} />
+                  <input type="hidden" name="m_payment_id" value={mPaymentId} />
                   <input type="hidden" name="amount" value={totalPrice.toFixed(2)} />
                   <input type="hidden" name="item_name" value="Kasi Street Style Order" />
 

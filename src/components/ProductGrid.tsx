@@ -6,6 +6,8 @@ import teeBlackFront from "@/assets/tee-black-front.png";
 import teeBlackBack from "@/assets/tee-black-back.png";
 import teeWhiteFront from "@/assets/tee-white-front.png";
 import teeWhiteBack from "@/assets/tee-white-back.png";
+import kasiWorldTeeFront from "@/assets/kasi-world-tee-front.png";
+import kasiWorldTeeBack from "@/assets/kasi-world-tee-back.png";
 
 interface Product {
   id: string;
@@ -14,6 +16,7 @@ interface Product {
   frontImage: string;
   backImage: string;
   color: string;
+  imageClassName?: string;
 }
 
 const products: Product[] = [
@@ -32,6 +35,15 @@ const products: Product[] = [
     frontImage: teeWhiteFront,
     backImage: teeWhiteBack,
     color: "white",
+  },
+  {
+    id: "tee-3",
+    name: "Kasi World Tee — Black",
+    price: "R450.00",
+    frontImage: kasiWorldTeeFront,
+    backImage: kasiWorldTeeBack,
+    color: "black",
+    imageClassName: "w-[85%] h-[85%]",
   },
 ];
 

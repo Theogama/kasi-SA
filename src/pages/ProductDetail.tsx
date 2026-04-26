@@ -9,6 +9,8 @@ import teeBlackFront from "@/assets/tee-black-front.png";
 import teeBlackBack from "@/assets/tee-black-back.png";
 import teeWhiteFront from "@/assets/tee-white-front.png";
 import teeWhiteBack from "@/assets/tee-white-back.png";
+import kasiWorldTeeFront from "@/assets/kasi-world-tee-front.png";
+import kasiWorldTeeBack from "@/assets/kasi-world-tee-back.png";
 
 const products: Record<string, any> = {
   "tee-1": {
@@ -39,6 +41,26 @@ const products: Record<string, any> = {
     color: "White",
     description:
       "Clean white tee with our signature muscle car design. Perfect for any occasion, versatile and timeless.",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL"],
+    inStock: true,
+    details: [
+      "100% Premium Cotton",
+      "Oversized Fit",
+      "Machine Washable",
+      "High-Quality Print",
+      "Comfortable & Breathable",
+    ],
+  },
+  "tee-3": {
+    id: "tee-3",
+    name: "Kasi World Tee — Black",
+    price: "R450.00",
+    frontImage: kasiWorldTeeFront,
+    backImage: kasiWorldTeeBack,
+    color: "Black",
+    imageClassName: "w-[85%] h-[85%]",
+    description:
+      "Black tee featuring the iconic Kasi From The Kasi To The World design. Made from premium cotton blend for comfort and durability.",
     sizes: ["XS", "S", "M", "L", "XL", "2XL"],
     inStock: true,
     details: [
@@ -96,8 +118,7 @@ const ProductDetail = () => {
       });
     }
 
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+    navigate("/cart");
   };
 
   return (
@@ -124,7 +145,7 @@ const ProductDetail = () => {
                 <img
                   src={showBack ? product.backImage : product.frontImage}
                   alt={product.name}
-                  className="w-[70%] object-contain transition-transform duration-700 hover:scale-110"
+                  className={`${product.imageClassName || 'w-[70%]'} object-contain transition-transform duration-700 hover:scale-110`}
                 />
                 <span className="absolute top-4 right-4 bg-foreground text-background px-3 py-1 rounded text-xs font-medium">
                   {showBack ? "Back View" : "Front View"}

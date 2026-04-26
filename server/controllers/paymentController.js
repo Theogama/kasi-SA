@@ -157,3 +157,67 @@ export const webhookHandler = async (req, res) => {
     res.status(500).json({ error: "Webhook processing failed" });
   }
 };
+
+export const payfastNotify = async (req, res) => {
+  try {
+    const payload = req.body;
+    const {
+      payment_status,
+      m_payment_id,
+      pf_payment_id,
+      amount_gross,
+    } = payload;
+
+    if (!m_payment_id) {
+      return res.status(400).json({ error: "Missing Payfast order identifier (m_payment_id)" });
+    }
+
+    const paymentReference = pf_payment_id || m_payment_id;
+    const status = payment_status === "COMPLETE" ? "success" : "failed";
+    const amount = parseFloat(amount_gross) || 0;
+
+    const { data: existingPayment, error: existingPaymentError } = await supabase
+      .from("payments")
+      .select("id")
+      .eq("payment_reference", paymentReference)
+      .maybeSingle();
+
+    if (existingPayment) {
+      const { error: updateError } = await supabase
+        .from("payments")
+        .update({
+          amount,
+          status,
+          response_data: payload,
+        })
+        .eq("id", existingPayment.id);
+
+      if (updateError) throw updateError;
+    } else {
+      const { error: insertError } = await supabase.from("payments").insert([
+        {
+          order_id: m_payment_id,
+          payment_method: "payfast",
+          payment_reference: paymentReference,
+          amount,
+          status,
+          response_data: payload,
+        },
+      ]);
+
+      if (insertError) throw insertError;
+    }
+
+    if (status === "success") {
+      await supabase
+        .from("orders")
+        .update({ payment_status: "completed" })
+        .eq("id", m_payment_id);
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error("Payfast notify error:", error);
+    res.status(500).json({ error: "Payfast notify processing failed" });
+  }
+};

@@ -1,5 +1,5 @@
 import express from "express";
-import { processYocoPayment, verifyPayment, webhookHandler } from "../controllers/paymentController.js";
+import { processYocoPayment, verifyPayment, webhookHandler, payfastNotify } from "../controllers/paymentController.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -8,7 +8,8 @@ const router = express.Router();
 router.post("/yoco/process", authenticate, processYocoPayment);
 router.post("/yoco/verify", authenticate, verifyPayment);
 
-// Webhook (no auth required - Yoco sends server-to-server)
+// Webhooks / callbacks
 router.post("/yoco/webhook", webhookHandler);
+router.post("/payfast/notify", payfastNotify);
 
 export default router;
