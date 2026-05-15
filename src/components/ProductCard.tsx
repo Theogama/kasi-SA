@@ -11,10 +11,9 @@ interface ProductCardProps {
   frontImage: string;
   backImage: string;
   color?: string;
-  imageClassName?: string;
 }
 
-const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color = "black", imageClassName }: ProductCardProps) => {
+const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color = "black" }: ProductCardProps) => {
   const [showBack, setShowBack] = useState(false);
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -50,7 +49,7 @@ const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color =
           <img
             src={showBack ? backImage : frontImage}
             alt={name}
-            className={`${imageClassName || 'w-[70%] h-[70%]'} object-contain transition-transform duration-700 group-hover:scale-125 relative z-10`}
+            className="w-[70%] h-[70%] object-contain transition-transform duration-700 group-hover:scale-125 relative z-10"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors z-0" />
         </div>
