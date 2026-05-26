@@ -28,10 +28,11 @@ const Navbar = () => {
           <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Cart Icon — always visible on all screen sizes */}
           <Link
             to="/cart"
-            className="relative p-2 hover:bg-secondary rounded-lg transition-colors hidden md:flex items-center justify-center"
+            className="relative p-2 hover:bg-secondary rounded-lg transition-colors flex items-center justify-center"
           >
             <ShoppingCart size={20} />
             {totalItems > 0 && (
@@ -41,7 +42,7 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Auth Menu */}
+          {/* Auth Menu — desktop only */}
           <div className="hidden md:flex items-center gap-2">
             <Show when="signed-out">
               <SignInButton mode="modal">
@@ -60,6 +61,7 @@ const Navbar = () => {
             </Show>
           </div>
 
+          {/* Hamburger menu — mobile only */}
           <button className="md:hidden p-2 hover:bg-secondary rounded-lg transition-colors" onClick={() => setOpen(!open)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -71,14 +73,6 @@ const Navbar = () => {
           <Link to="/shop" onClick={() => setOpen(false)}>Shop</Link>
           <Link to="/about" onClick={() => setOpen(false)}>About</Link>
           <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
-          <Link
-            to="/cart"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 pt-4 border-t border-border"
-          >
-            <ShoppingCart size={16} />
-            Cart {totalItems > 0 && `(${totalItems})`}
-          </Link>
           
           <Show when="signed-in">
             <div className="pt-4 border-t border-border">

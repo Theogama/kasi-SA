@@ -6,7 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Landmark } from "lucide-react";
+import { toast } from "sonner";
 
 const Checkout = () => {
   const { isSignedIn, isLoaded } = useAuth();
@@ -80,7 +81,10 @@ const Checkout = () => {
   const handlePayfastSubmit = (event: FormEvent<HTMLFormElement>) => {
     if (!merchantId || !merchantKey) {
       event.preventDefault();
-      alert("Error: Payfast credentials are not configured. Please contact support.");
+      toast.error("Payment configuration error", {
+        description: "Payfast credentials are not configured. Please contact support.",
+        duration: 5000,
+      });
       return;
     }
     setIsSubmitting(true);
@@ -173,6 +177,47 @@ const Checkout = () => {
                     {isSubmitting ? "Redirecting to Payfast..." : `Pay R${totalPrice.toFixed(2)} Now`}
                   </Button>
                 </form>
+
+                {/* Accepted Payment Methods */}
+                <div className="mt-6 pt-5 border-t border-border">
+                  <p className="text-xs text-muted-foreground text-center mb-3 font-medium tracking-wide uppercase">Accepted Payment Methods</p>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    {/* Visa */}
+                    <div className="w-12 h-8 bg-secondary border border-border rounded flex items-center justify-center" title="Visa">
+                      <svg viewBox="0 0 48 32" className="w-8 h-5">
+                        <rect width="48" height="32" rx="4" fill="#1A1F71" />
+                        <text x="24" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="Arial, sans-serif" fontStyle="italic">VISA</text>
+                      </svg>
+                    </div>
+                    {/* Mastercard */}
+                    <div className="w-12 h-8 bg-secondary border border-border rounded flex items-center justify-center" title="Mastercard">
+                      <svg viewBox="0 0 48 32" className="w-8 h-5">
+                        <rect width="48" height="32" rx="4" fill="#2D2D2D" />
+                        <circle cx="19" cy="16" r="8" fill="#EB001B" />
+                        <circle cx="29" cy="16" r="8" fill="#F79E1B" />
+                        <path d="M24 9.5a8 8 0 0 1 0 13" fill="#FF5F00" />
+                      </svg>
+                    </div>
+                    {/* Amex */}
+                    <div className="w-12 h-8 bg-secondary border border-border rounded flex items-center justify-center" title="American Express">
+                      <svg viewBox="0 0 48 32" className="w-8 h-5">
+                        <rect width="48" height="32" rx="4" fill="#2E77BC" />
+                        <text x="24" y="18" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="Arial, sans-serif">AMEX</text>
+                      </svg>
+                    </div>
+                    {/* Instant EFT */}
+                    <div className="w-12 h-8 bg-secondary border border-border rounded flex items-center justify-center" title="Instant EFT">
+                      <Landmark size={14} className="text-emerald-600" />
+                    </div>
+                    {/* SnapScan */}
+                    <div className="w-12 h-8 bg-secondary border border-border rounded flex items-center justify-center" title="SnapScan">
+                      <svg viewBox="0 0 48 32" className="w-8 h-5">
+                        <rect width="48" height="32" rx="4" fill="#E63B2E" />
+                        <text x="24" y="18" textAnchor="middle" fill="white" fontSize="6.5" fontWeight="bold" fontFamily="Arial, sans-serif">SNAPSCAN</text>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </Card>
             </div>
           </div>

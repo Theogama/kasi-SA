@@ -18,5 +18,4 @@ createRoot(document.getElementById("root")!).render(
     </ClerkProvider>
     <Analytics />
   </StrictMode>
-  
 );
