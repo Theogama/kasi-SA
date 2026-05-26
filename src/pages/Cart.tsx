@@ -1,25 +1,35 @@
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, LogIn } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/react";
+import { useAuth, useClerk } from "@clerk/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { toast } from "sonner";
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const { isSignedIn } = useAuth();
+  const { openSignIn, openSignUp } = useClerk();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
     if (isSignedIn) {
       navigate("/checkout");
     } else {
-      // With Clerk, we can redirect or show the sign-in modal.
-      // Since /login is removed, we just use navigate("/") or similar, 
-      // but ideally we should trigger the Clerk sign-in.
-      // For now, let's just go home if not signed in, or we could just let the checkout handle it.
-      navigate("/checkout");
+      toast("Sign in to continue", {
+        description: "You need an account to proceed to checkout. Sign in or create a new account.",
+        icon: <LogIn size={16} />,
+        duration: 6000,
+        action: {
+          label: "Sign In",
+          onClick: () => openSignIn({ redirectUrl: "/cart" }),
+        },
+        cancel: {
+          label: "Sign Up",
+          onClick: () => openSignUp({ redirectUrl: "/cart" }),
+        },
+      });
     }
   };
 

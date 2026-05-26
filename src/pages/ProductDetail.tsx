@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, ChevronLeft } from "lucide-react";
+import { ShoppingCart, ChevronLeft, Check, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import teeBlackFront from "@/assets/tee-black-front.png";
@@ -81,7 +82,11 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert("Please select a size");
+      toast.error("Please select a size", {
+        description: "Choose your preferred size before adding to cart.",
+        icon: <AlertCircle size={16} />,
+        duration: 3000,
+      });
       return;
     }
 
@@ -96,7 +101,18 @@ const ProductDetail = () => {
       });
     }
 
-    navigate("/cart");
+    setAddedToCart(true);
+    toast.success(`${product.name} added to cart`, {
+      description: `Size: ${selectedSize} — Qty: ${quantity} — ${product.price}`,
+      icon: <Check size={16} />,
+      action: {
+        label: "View Cart",
+        onClick: () => navigate("/cart"),
+      },
+      duration: 4000,
+    });
+
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   return (

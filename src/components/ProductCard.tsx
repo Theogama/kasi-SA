@@ -2,7 +2,8 @@ import { useState, type MouseEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   id?: string;
@@ -30,7 +31,15 @@ const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color =
       backImage,
     });
 
-    navigate("/cart");
+    toast.success(`${name} added to cart`, {
+      description: `${price} — 1 item`,
+      icon: <Check size={16} />,
+      action: {
+        label: "View Cart",
+        onClick: () => navigate("/cart"),
+      },
+      duration: 3000,
+    });
   };
 
   return (
