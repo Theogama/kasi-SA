@@ -27,6 +27,9 @@ const Navbar = () => {
           <Link to="/shop" className="hover:text-foreground transition-colors">Shop</Link>
           <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
           <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+          <Show when="signed-in">
+            <Link to="/orders" className="hover:text-foreground transition-colors">Orders</Link>
+          </Show>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           {/* Cart Icon — always visible on all screen sizes */}
@@ -73,6 +76,9 @@ const Navbar = () => {
           <Link to="/shop" onClick={() => setOpen(false)}>Shop</Link>
           <Link to="/about" onClick={() => setOpen(false)}>About</Link>
           <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+          <Show when="signed-in">
+            <Link to="/orders" onClick={() => setOpen(false)}>Orders</Link>
+          </Show>
           
           <Show when="signed-in">
             <div className="pt-4 border-t border-border">

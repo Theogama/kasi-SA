@@ -6,15 +6,16 @@ import { ShoppingCart, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProductCardProps {
-  id?: string;
+  id: string;
   name: string;
   price: string;
   frontImage: string;
   backImage: string;
   color?: string;
+  stockQuantity?: number;
 }
 
-const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color = "black" }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, frontImage, backImage, color = "black", stockQuantity = 0 }: ProductCardProps) => {
   const [showBack, setShowBack] = useState(false);
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -22,6 +23,11 @@ const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color =
   const handleAddToCart = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (stockQuantity <= 0) {
+      toast.error(`${name} is currently out of stock`);
+      return;
+    }
 
     addToCart({
       id,
@@ -69,9 +75,10 @@ const ProductCard = ({ id = "tee-1", name, price, frontImage, backImage, color =
           variant="outline"
           className="mt-auto w-full group/btn hover:bg-foreground hover:text-background"
           onClick={handleAddToCart}
+          disabled={stockQuantity <= 0}
         >
           <ShoppingCart size={16} className="mr-2" />
-          Add to Cart
+          {stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}
         </Button>
       </div>
     </Link>

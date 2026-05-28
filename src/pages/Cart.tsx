@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useCart } from "@/context/CartContext";
+import { reconcileCartWithDatabase } from "@/lib/orders";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2, LogIn } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,12 +8,36 @@ import { useAuth, useClerk } from "@clerk/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { parsePriceLabel } from "@/lib/products";
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
+  const { items, removeFromCart, updateQuantity, clearCart, replaceItems, totalPrice } = useCart();
   const { isSignedIn } = useAuth();
   const { openSignIn, openSignUp } = useClerk();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (items.length === 0) return;
+
+    let active = true;
+
+    (async () => {
+      try {
+        const result = await reconcileCartWithDatabase(items);
+        if (!active || result.removedCount === 0) return;
+
+        replaceItems(result.items);
+        toast.error(result.message ?? "Unavailable items were removed from your cart");
+      } catch (err) {
+        console.warn("Could not verify cart stock:", err);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+    // Verify cart once when opening the cart page (not on every quantity change).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCheckout = () => {
     if (isSignedIn) {
@@ -84,14 +110,14 @@ const Cart = () => {
 
                       <div className="flex items-center gap-2 mt-4">
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                           className="p-1 hover:bg-secondary rounded transition-colors"
                         >
                           <Minus size={16} />
                         </button>
                         <span className="w-8 text-center text-sm">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)}
                           className="p-1 hover:bg-secondary rounded transition-colors"
                         >
                           <Plus size={16} />
@@ -101,13 +127,13 @@ const Cart = () => {
 
                     <div className="flex flex-col items-end justify-between">
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.id, item.size)}
                         className="p-2 hover:bg-destructive/10 hover:text-destructive rounded transition-colors"
                       >
                         <Trash2 size={18} />
                       </button>
                       <p className="font-medium">
-                        R{(parseFloat(item.price.replace("R", "").replace(",", "")) * item.quantity).toFixed(2)}
+                        R{(parsePriceLabel(item.price) * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>

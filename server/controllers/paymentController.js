@@ -1,5 +1,6 @@
 import axios from "axios";
 import { supabase } from "../config/supabase.js";
+import { isPayfastPaymentComplete, verifyPayfastSignature } from "../utils/payfast.js";
 
 const YOCO_API_URL = "https://api.yoco.com/v1";
 const YOCO_SECRET_KEY = process.env.VITE_YOCO_SECRET_KEY;
@@ -172,15 +173,34 @@ export const payfastNotify = async (req, res) => {
       return res.status(400).json({ error: "Missing Payfast order identifier (m_payment_id)" });
     }
 
+    const passphrase = process.env.PAYFAST_PASSPHRASE || "";
+    const signatureValid = verifyPayfastSignature(payload, passphrase);
+    if (!signatureValid) {
+      return res.status(400).json({ error: "Invalid Payfast signature" });
+    }
+
     const paymentReference = pf_payment_id || m_payment_id;
-    const status = payment_status === "COMPLETE" ? "success" : "failed";
+    const status = isPayfastPaymentComplete(payment_status) ? "success" : "failed";
     const amount = parseFloat(amount_gross) || 0;
+
+    const { data: order, error: orderLookupError } = await supabase
+      .from("orders")
+      .select("id, payment_status")
+      .eq("order_number", m_payment_id)
+      .maybeSingle();
+
+    if (orderLookupError) throw orderLookupError;
+    if (!order?.id) {
+      return res.status(404).json({ error: "Order not found for m_payment_id" });
+    }
 
     const { data: existingPayment, error: existingPaymentError } = await supabase
       .from("payments")
       .select("id")
       .eq("payment_reference", paymentReference)
       .maybeSingle();
+
+    if (existingPaymentError) throw existingPaymentError;
 
     if (existingPayment) {
       const { error: updateError } = await supabase
@@ -196,7 +216,7 @@ export const payfastNotify = async (req, res) => {
     } else {
       const { error: insertError } = await supabase.from("payments").insert([
         {
-          order_id: m_payment_id,
+          order_id: order.id,
           payment_method: "payfast",
           payment_reference: paymentReference,
           amount,
@@ -208,16 +228,65 @@ export const payfastNotify = async (req, res) => {
       if (insertError) throw insertError;
     }
 
-    if (status === "success") {
-      await supabase
+    if (status === "success" && order.payment_status !== "completed") {
+      const { error: orderUpdateError } = await supabase
         .from("orders")
-        .update({ payment_status: "completed" })
-        .eq("id", m_payment_id);
+        .update({ payment_status: "completed", order_status: "processing" })
+        .eq("id", order.id);
+
+      if (orderUpdateError) throw orderUpdateError;
+
+      const { data: orderItems, error: itemsError } = await supabase
+        .from("order_items")
+        .select("product_id, quantity")
+        .eq("order_id", order.id);
+
+      if (itemsError) throw itemsError;
+
+      for (const item of orderItems || []) {
+        const { error: stockError } = await supabase.rpc("decrement_product_stock", {
+          p_product_id: item.product_id,
+          p_qty: item.quantity,
+        });
+        if (stockError) throw stockError;
+      }
     }
 
     res.json({ received: true });
   } catch (error) {
     console.error("Payfast notify error:", error);
     res.status(500).json({ error: "Payfast notify processing failed" });
+  }
+};
+
+export const getPayfastOrderStatus = async (req, res) => {
+  try {
+    const { orderNumber } = req.params;
+
+    if (!orderNumber) {
+      return res.status(400).json({ error: "Order number is required" });
+    }
+
+    const { data: order, error } = await supabase
+      .from("orders")
+      .select("*, customer_addresses(*)")
+      .eq("order_number", orderNumber)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    res.json({
+      order,
+      paid: ["completed", "success", "paid"].includes(
+        String(order.payment_status || "").toLowerCase()
+      ),
+    });
+  } catch (error) {
+    console.error("Payfast status error:", error);
+    res.status(500).json({ error: "Failed to get order payment status" });
   }
 };

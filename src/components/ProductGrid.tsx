@@ -2,12 +2,8 @@ import { useState, useMemo } from "react";
 import ProductCard from "./ProductCard";
 import SearchBar from "./SearchBar";
 import FilterBar, { FilterOptions } from "./FilterBar";
-import teeBlackFront from "@/assets/tee-black-front.png";
-import teeBlackBack from "@/assets/tee-black-back.png";
-import teeWhiteFront from "@/assets/tee-white-front.png";
-import teeWhiteBack from "@/assets/tee-white-back.png";
-import kasiWorldTeeFront from "@/assets/kasi-world-tee-front.png";
-import kasiWorldTeeBack from "@/assets/kasi-world-tee-back.png";
+import { useProducts } from "@/hooks/useProducts";
+import { AlertCircle } from "lucide-react";
 
 interface Product {
   id: string;
@@ -17,39 +13,27 @@ interface Product {
   backImage: string;
   color: string;
   imageClassName?: string;
+  stockQuantity: number;
 }
 
-const products: Product[] = [
-  {
-    id: "tee-1",
-    name: "Muscle Car Tee — Black",
-    price: "R450.00",
-    frontImage: teeBlackFront,
-    backImage: teeBlackBack,
-    color: "black",
-  },
-  {
-    id: "tee-2",
-    name: "Muscle Car Tee — White",
-    price: "R450.00",
-    frontImage: teeWhiteFront,
-    backImage: teeWhiteBack,
-    color: "white",
-  },
-  {
-    id: "tee-3",
-    name: "Kasi World Tee — Black",
-    price: "R450.00",
-    frontImage: kasiWorldTeeFront,
-    backImage: kasiWorldTeeBack,
-    color: "black",
-    imageClassName: "w-[85%] h-[85%]",
-  },
-];
-
 const ProductGrid = () => {
+  const { products: dbProducts, loading, error, catalogSource } = useProducts();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterOptions>({});
+
+  const products = useMemo<Product[]>(
+    () =>
+      dbProducts.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.priceLabel,
+        frontImage: product.frontImage,
+        backImage: product.backImage,
+        color: product.color,
+        stockQuantity: product.stockQuantity,
+      })),
+    [dbProducts]
+  );
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -99,7 +83,9 @@ const ProductGrid = () => {
     }
 
     return result;
-  }, [searchQuery, filters]);
+  }, [searchQuery, filters, products]);
+
+  const usingFallbackCatalog = !loading && !error && catalogSource === "fallback";
 
   return (
     <section id="shop" className="py-28">
@@ -119,6 +105,20 @@ const ProductGrid = () => {
           </a>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 rounded-lg border border-destructive/30 bg-destructive/10 text-destructive text-sm flex items-center gap-2">
+            <AlertCircle size={16} />
+            {error}
+          </div>
+        )}
+
+        {usingFallbackCatalog && (
+          <div className="mb-6 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-900 text-sm">
+            Live catalog is empty in Supabase. Products are shown for preview only — checkout will not work until you run{" "}
+            <code className="text-xs">server/migrations/002_products_rls_payfast.sql</code> in the Supabase SQL editor.
+          </div>
+        )}
+
         {/* Search and Filter Section */}
         <div className="mb-10 space-y-4">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
@@ -129,6 +129,10 @@ const ProductGrid = () => {
         <div className="mb-6 text-sm text-muted-foreground">
           Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? "s" : ""}
         </div>
+
+        {loading && (
+          <div className="text-sm text-muted-foreground mb-6">Loading products...</div>
+        )}
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (

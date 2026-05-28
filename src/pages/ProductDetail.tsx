@@ -6,62 +6,31 @@ import { ShoppingCart, ChevronLeft, Check, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import teeBlackFront from "@/assets/tee-black-front.png";
-import teeBlackBack from "@/assets/tee-black-back.png";
-import teeWhiteFront from "@/assets/tee-white-front.png";
-import teeWhiteBack from "@/assets/tee-white-back.png";
-
-const products: Record<string, any> = {
-  "tee-1": {
-    id: "tee-1",
-    name: "Muscle Car Tee — Black",
-    price: "R450.00",
-    frontImage: teeBlackFront,
-    backImage: teeBlackBack,
-    color: "Black",
-    description:
-      "Classic black tee featuring our iconic muscle car design. Made from premium cotton blend for comfort and durability.",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL"],
-    inStock: true,
-    details: [
-      "100% Premium Cotton",
-      "Oversized Fit",
-      "Machine Washable",
-      "High-Quality Print",
-      "Comfortable & Breathable",
-    ],
-  },
-  "tee-2": {
-    id: "tee-2",
-    name: "Muscle Car Tee — White",
-    price: "R450.00",
-    frontImage: teeWhiteFront,
-    backImage: teeWhiteBack,
-    color: "White",
-    description:
-      "Clean white tee with our signature muscle car design. Perfect for any occasion, versatile and timeless.",
-    sizes: ["XS", "S", "M", "L", "XL", "2XL"],
-    inStock: true,
-    details: [
-      "100% Premium Cotton",
-      "Oversized Fit",
-      "Machine Washable",
-      "High-Quality Print",
-      "Comfortable & Breathable",
-    ],
-  },
-};
+import { useProduct } from "@/hooks/useProducts";
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { product, loading, error } = useProduct(productId);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [showBack, setShowBack] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
 
-  const product = products[productId || "tee-1"];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-32 pb-20">
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-3xl font-heading mb-4">Loading product...</h1>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -70,6 +39,7 @@ const ProductDetail = () => {
         <div className="pt-32 pb-20">
           <div className="container mx-auto px-6 text-center">
             <h1 className="text-4xl font-heading mb-4">Product Not Found</h1>
+            {error && <p className="text-sm text-muted-foreground">{error}</p>}
             <Button onClick={() => navigate("/")} className="mt-4">
               Back to Shop
             </Button>
@@ -90,20 +60,26 @@ const ProductDetail = () => {
       return;
     }
 
-    for (let i = 0; i < quantity; i++) {
-      addToCart({
-        id: `${product.id}-${selectedSize}`,
+    if (quantity > product.stockQuantity) {
+      toast.error(`Only ${product.stockQuantity} item(s) in stock`);
+      return;
+    }
+
+    addToCart(
+      {
+        id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.priceLabel,
         frontImage: product.frontImage,
         backImage: product.backImage,
         size: selectedSize,
-      });
-    }
+      },
+      quantity
+    );
 
     setAddedToCart(true);
     toast.success(`${product.name} added to cart`, {
-      description: `Size: ${selectedSize} — Qty: ${quantity} — ${product.price}`,
+      description: `Size: ${selectedSize} — Qty: ${quantity} — ${product.priceLabel}`,
       icon: <Check size={16} />,
       action: {
         label: "View Cart",
@@ -156,7 +132,7 @@ const ProductDetail = () => {
                 {product.color}
               </p>
               <h1 className="text-4xl md:text-5xl font-heading mb-4">{product.name}</h1>
-              <p className="text-2xl font-heading mb-6">{product.price}</p>
+              <p className="text-2xl font-heading mb-6">{product.priceLabel}</p>
 
               <p className="text-muted-foreground mb-8">{product.description}</p>
 
@@ -202,7 +178,7 @@ const ProductDetail = () => {
               {/* Stock Status */}
               <div className="mb-8">
                 {product.inStock ? (
-                  <p className="text-sm text-green-600 font-medium">✓ In Stock</p>
+                  <p className="text-sm text-green-600 font-medium">✓ In Stock ({product.stockQuantity})</p>
                 ) : (
                   <p className="text-sm text-destructive font-medium">Out of Stock</p>
                 )}

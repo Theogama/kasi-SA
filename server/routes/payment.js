@@ -1,5 +1,11 @@
 import express from "express";
-import { processYocoPayment, verifyPayment, webhookHandler, payfastNotify } from "../controllers/paymentController.js";
+import {
+  processYocoPayment,
+  verifyPayment,
+  webhookHandler,
+  payfastNotify,
+  getPayfastOrderStatus,
+} from "../controllers/paymentController.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -11,5 +17,6 @@ router.post("/yoco/verify", authenticate, verifyPayment);
 // Webhooks / callbacks
 router.post("/yoco/webhook", webhookHandler);
 router.post("/payfast/notify", payfastNotify);
+router.get("/payfast/status/:orderNumber", getPayfastOrderStatus);
 
 export default router;
