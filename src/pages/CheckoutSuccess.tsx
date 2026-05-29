@@ -129,8 +129,8 @@ const CheckoutSuccess = () => {
     <div className="min-h-screen bg-background flex flex-col font-sans">
       <Navbar />
       
-      <div className="flex-grow pt-28 pb-20">
-        <div className="container mx-auto px-6 max-w-3xl">
+      <div className="flex-grow pt-navbar pb-16 sm:pb-20">
+        <div className="container mx-auto max-w-3xl">
           
           {isLoading ? (
             <Card className="p-12 text-center border border-border bg-card shadow-sm animate-pulse space-y-4">
@@ -150,7 +150,7 @@ const CheckoutSuccess = () => {
           ) : !order ? (
             <Card className="p-12 text-center border border-border bg-card shadow-sm space-y-6">
               <AlertCircle size={48} className="text-muted-foreground mx-auto" />
-              <h1 className="text-4xl font-heading font-extrabold text-foreground">Pending Payment Detected</h1>
+              <h1 className="text-3xl sm:text-4xl font-heading font-extrabold text-foreground">Pending Payment Detected</h1>
               <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
                 We did not receive a confirmed checkout trigger. If you cancelled your Payfast payment session, you can retry checkout by returning to your cart.
               </p>
@@ -168,12 +168,12 @@ const CheckoutSuccess = () => {
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
               
               {/* Header Splash Card */}
-              <Card className="p-8 border border-border bg-secondary/15 flex flex-col items-center text-center overflow-hidden relative">
+              <Card className="p-5 sm:p-8 border border-border bg-secondary/15 flex flex-col items-center text-center overflow-hidden relative">
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center shadow-inner mb-4 animate-in zoom-in-50 duration-300">
                   <CheckCircle2 size={36} />
                 </div>
                 
-                <h1 className="text-4xl font-heading font-black tracking-tight text-foreground">Order Confirmed</h1>
+                <h1 className="text-3xl sm:text-4xl font-heading font-black tracking-tight text-foreground">Order Confirmed</h1>
                 <p className="text-muted-foreground text-sm max-w-md leading-relaxed mt-2">
                   Dankie! Thanks for supporting local style. Your order is secured and we are busy preparing your parcel.
                 </p>
@@ -326,12 +326,12 @@ const CheckoutSuccess = () => {
               </Card>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center pt-4">
-                <Button size="lg" onClick={() => navigate("/")} className="w-full sm:w-auto font-bold px-8">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-center pt-4">
+                <Button size="lg" onClick={() => navigate("/")} className="w-full sm:w-auto font-bold px-6 sm:px-8">
                   Continue Shopping
                   <ChevronRight size={16} className="ml-1" />
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => navigate("/shop")} className="w-full sm:w-auto font-bold px-8">
+                <Button variant="outline" size="lg" onClick={() => navigate("/shop")} className="w-full sm:w-auto font-bold px-6 sm:px-8">
                   Browse Kasi Collection
                 </Button>
               </div>

@@ -10,16 +10,16 @@ const About = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 border-b border-border">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-4">
+      <section className="pt-navbar pb-12 sm:pb-20 border-b border-border">
+        <div className="container mx-auto">
+          <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
+            <p className="text-[10px] sm:text-xs font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase text-muted-foreground mb-4">
               Our Story
             </p>
-            <h1 className="text-5xl md:text-7xl font-heading mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading mb-4 sm:mb-6">
               Kasi SA Streetwear
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed px-2 sm:px-0">
               Born from the heart of South Africa's townships, we create bold graphic tees that celebrate authentic street culture and unapologetic style.
             </p>
           </div>
@@ -27,10 +27,10 @@ const About = () => {
       </section>
 
       {/* The Beginning */}
-      <section className="py-20 border-b border-border">
-        <div className="container mx-auto px-6">
+      <section className="py-12 sm:py-20 border-b border-border">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl font-heading mb-8">The Beginning</h2>
+            <h2 className="text-3xl sm:text-4xl font-heading mb-6 sm:mb-8">The Beginning</h2>
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p>
                 Kasi SA Streetwear started as a dream in the vibrant streets of Kasi, where creativity flows as freely as the culture itself. We witnessed the raw talent, the bold personalities, and the unmistakable style that defines township culture.

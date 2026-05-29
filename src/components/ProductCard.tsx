@@ -15,8 +15,10 @@ interface ProductCardProps {
   stockQuantity?: number;
 }
 
-const ProductCard = ({ id, name, price, frontImage, backImage, color = "black", stockQuantity = 0 }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, frontImage, backImage, stockQuantity = 0 }: ProductCardProps) => {
   const [showBack, setShowBack] = useState(false);
+
+  const toggleImage = () => setShowBack((prev) => !prev);
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
@@ -53,9 +55,14 @@ const ProductCard = ({ id, name, price, frontImage, backImage, color = "black", 
       <div className="group cursor-pointer h-full flex flex-col">
         {/* Grid Background Container with Zoom */}
         <div
-          className="aspect-[3/4] bg-secondary flex items-center justify-center mb-4 overflow-hidden rounded-xl relative border border-border/50"
+          className="aspect-[3/4] bg-secondary flex items-center justify-center mb-3 sm:mb-4 overflow-hidden rounded-xl relative border border-border/50"
           onMouseEnter={() => setShowBack(true)}
           onMouseLeave={() => setShowBack(false)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleImage();
+          }}
         >
           {/* Grid Pattern Background */}
           <div className="absolute inset-0 bg-[linear-gradient(90deg,_rgba(0,0,0,0.05)_1px,_transparent_1px),_linear-gradient(0deg,_rgba(0,0,0,0.05)_1px,_transparent_1px)] bg-[size:30px_30px] pointer-events-none" />
@@ -77,8 +84,8 @@ const ProductCard = ({ id, name, price, frontImage, backImage, color = "black", 
           onClick={handleAddToCart}
           disabled={stockQuantity <= 0}
         >
-          <ShoppingCart size={16} className="mr-2" />
-          {stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}
+          <ShoppingCart size={16} className="mr-1.5 sm:mr-2 shrink-0" />
+          <span className="truncate">{stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}</span>
         </Button>
       </div>
     </Link>

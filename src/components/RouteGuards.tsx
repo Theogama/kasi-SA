@@ -4,8 +4,8 @@ import { useAuth } from "@clerk/react";
 import { useCart } from "@/context/CartContext";
 
 const PageLoader = ({ message }: { message: string }) => (
-  <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-    <p className="animate-pulse text-lg font-medium">{message}</p>
+  <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4 text-center">
+    <p className="animate-pulse text-base sm:text-lg font-medium">{message}</p>
   </div>
 );
 

@@ -31,16 +31,16 @@ const Contact = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 border-b border-border">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-4">
+      <section className="pt-navbar pb-12 sm:pb-20 border-b border-border">
+        <div className="container mx-auto">
+          <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
+            <p className="text-[10px] sm:text-xs font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase text-muted-foreground mb-4">
               Get In Touch
             </p>
-            <h1 className="text-5xl md:text-7xl font-heading mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading mb-4 sm:mb-6">
               Contact Us
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed px-2 sm:px-0">
               Have a question, collaboration idea, or just want to connect? We'd love to hear from you. Drop us a message and we'll get back to you.
             </p>
           </div>
@@ -48,10 +48,10 @@ const Contact = () => {
       </section>
 
       {/* Contact Info Cards + Form */}
-      <section className="py-20 border-b border-border">
-        <div className="container mx-auto px-6">
+      <section className="py-12 sm:py-20 border-b border-border">
+        <div className="container mx-auto">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
               {/* Left - Contact Info */}
               <div className="lg:col-span-2 space-y-6">
                 <h2 className="text-3xl font-heading mb-8">Let's Talk</h2>

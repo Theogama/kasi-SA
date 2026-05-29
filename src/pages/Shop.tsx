@@ -6,7 +6,7 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-20">
+      <div className="pt-navbar">
         <ProductGrid />
       </div>
       <Footer />

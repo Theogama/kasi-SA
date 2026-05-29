@@ -39,6 +39,9 @@
     --font-heading: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
 
+    /* Fixed navbar height — matches Navbar.tsx */
+    --navbar-height: 4.5rem;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 6%;
     --sidebar-primary: 0 0% 6%;
@@ -55,13 +58,34 @@
     @apply border-border;
   }
 
+  html {
+    scroll-padding-top: var(--navbar-height);
+    overflow-x: hidden;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --navbar-height: 5.5rem;
+    }
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
     font-family: var(--font-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     letter-spacing: 0.02em;
+  }
+}
+
+@layer utilities {
+  .pt-navbar {
+    padding-top: var(--navbar-height);
+  }
+
+  .sticky-below-nav {
+    top: calc(var(--navbar-height) + 1rem);
   }
 }

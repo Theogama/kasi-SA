@@ -22,9 +22,9 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="pt-32 pb-20">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-3xl font-heading mb-4">Loading product...</h1>
+        <div className="pt-navbar pb-16 sm:pb-20">
+          <div className="container mx-auto text-center">
+            <h1 className="text-2xl sm:text-3xl font-heading mb-4">Loading product...</h1>
           </div>
         </div>
         <Footer />
@@ -36,9 +36,9 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="pt-32 pb-20">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-4xl font-heading mb-4">Product Not Found</h1>
+        <div className="pt-navbar pb-16 sm:pb-20">
+          <div className="container mx-auto text-center">
+            <h1 className="text-3xl sm:text-4xl font-heading mb-4">Product Not Found</h1>
             {error && <p className="text-sm text-muted-foreground">{error}</p>}
             <Button onClick={() => navigate("/")} className="mt-4">
               Back to Shop
@@ -94,8 +94,8 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-20 pb-20">
-        <div className="container mx-auto px-6">
+      <div className="pt-navbar pb-16 sm:pb-20">
+        <div className="container mx-auto">
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
@@ -131,15 +131,15 @@ const ProductDetail = () => {
               <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-2">
                 {product.color}
               </p>
-              <h1 className="text-4xl md:text-5xl font-heading mb-4">{product.name}</h1>
-              <p className="text-2xl font-heading mb-6">{product.priceLabel}</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading mb-4 break-words">{product.name}</h1>
+              <p className="text-xl sm:text-2xl font-heading mb-6">{product.priceLabel}</p>
 
               <p className="text-muted-foreground mb-8">{product.description}</p>
 
               {/* Size Selection */}
               <div className="mb-8">
                 <label className="text-sm font-medium mb-4 block">Select Size</label>
-                <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                   {product.sizes.map((size) => (
                     <button
                       key={size}

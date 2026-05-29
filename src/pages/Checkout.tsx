@@ -326,27 +326,27 @@ const Checkout = () => {
     <div className="min-h-screen bg-background flex flex-col font-sans">
       <Navbar />
       
-      <div className="flex-grow pt-24 pb-20">
-        <div className="container mx-auto px-6 max-w-5xl">
+      <div className="flex-grow pt-navbar pb-16 sm:pb-20">
+        <div className="container mx-auto max-w-5xl min-w-0">
           
           {/* Progress Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border pb-6">
-            <div>
-              <h1 className="text-4xl font-heading tracking-tight font-extrabold text-foreground">Secure Checkout</h1>
-              <p className="text-sm text-muted-foreground mt-1">Order Ref: {mPaymentId}</p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 sm:mb-8 border-b border-border pb-4 sm:pb-6">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading tracking-tight font-extrabold text-foreground">Secure Checkout</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">Order Ref: {mPaymentId}</p>
             </div>
             
             {/* Step indicators */}
-            <div className="flex items-center gap-3">
-              <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full transition-all ${
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all ${
                 checkoutStep === 1 
                   ? "bg-foreground text-background" 
                   : "bg-secondary text-muted-foreground"
               }`}>
                 1. Shipping Details
               </span>
-              <ArrowRight size={16} className="text-muted-foreground" />
-              <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full transition-all ${
+              <ArrowRight size={16} className="text-muted-foreground hidden sm:inline shrink-0" />
+              <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all ${
                 checkoutStep === 2 
                   ? "bg-foreground text-background" 
                   : "bg-secondary text-muted-foreground"
@@ -364,9 +364,9 @@ const Checkout = () => {
               {checkoutStep === 1 ? (
                 /* STEP 1: Shipping and Carrier Select */
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <Card className="p-6 border border-border">
-                    <h2 className="text-2xl font-heading font-bold mb-6 flex items-center gap-2">
-                      <User size={20} className="text-muted-foreground" />
+                  <Card className="p-4 sm:p-6 border border-border">
+                    <h2 className="text-xl sm:text-2xl font-heading font-bold mb-4 sm:mb-6 flex items-center gap-2">
+                      <User size={20} className="text-muted-foreground shrink-0" />
                       Recipient Information
                     </h2>
                     
@@ -403,9 +403,9 @@ const Checkout = () => {
                   </Card>
 
                   {/* Carrier Selection */}
-                  <Card className="p-6 border border-border">
-                    <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
-                      <Truck size={20} className="text-muted-foreground" />
+                  <Card className="p-4 sm:p-6 border border-border">
+                    <h2 className="text-xl sm:text-2xl font-heading font-bold mb-4 flex items-center gap-2">
+                      <Truck size={20} className="text-muted-foreground shrink-0" />
                       Choose Shipping Method
                     </h2>
                     <p className="text-sm text-muted-foreground mb-6">Select from our local South African shipping partners tailored for township and urban delivery.</p>
@@ -462,7 +462,7 @@ const Checkout = () => {
                   </Card>
 
                   {/* Custom Carrier Location Fields */}
-                  <Card className="p-6 border border-border">
+                  <Card className="p-4 sm:p-6 border border-border min-w-0">
                     {selectedCarrierId === "courier_guy" && (
                       <div className="space-y-4 animate-in fade-in duration-200">
                         <h3 className="text-xl font-heading font-bold mb-4 flex items-center gap-2">
@@ -645,7 +645,7 @@ const Checkout = () => {
                   </Card>
 
                   {/* Proceed CTA */}
-                  <Button onClick={handleNextStep} className="w-full font-bold uppercase tracking-wider py-6" size="lg">
+                  <Button onClick={handleNextStep} className="w-full font-bold uppercase tracking-wider py-4 sm:py-6" size="lg">
                     Continue to Payment Review
                     <ArrowRight size={18} className="ml-2" />
                   </Button>
@@ -653,13 +653,13 @@ const Checkout = () => {
               ) : (
                 /* STEP 2: Payment Gateway & Review */
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">
-                  <Card className="p-6 border border-border space-y-6">
-                    <div className="flex justify-between items-center border-b border-border pb-4">
-                      <h2 className="text-2xl font-heading font-bold flex items-center gap-2">
-                        <ShieldCheck size={24} className="text-green-600" />
+                  <Card className="p-4 sm:p-6 border border-border space-y-6 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-border pb-4">
+                      <h2 className="text-xl sm:text-2xl font-heading font-bold flex items-center gap-2">
+                        <ShieldCheck size={24} className="text-green-600 shrink-0" />
                         Order & Delivery Review
                       </h2>
-                      <Button variant="ghost" size="sm" onClick={() => setCheckoutStep(1)} className="font-semibold text-xs text-muted-foreground underline">
+                      <Button variant="ghost" size="sm" onClick={() => setCheckoutStep(1)} className="font-semibold text-xs text-muted-foreground underline self-start sm:self-auto">
                         Edit Shipping
                       </Button>
                     </div>
@@ -736,11 +736,11 @@ const Checkout = () => {
                       <input type="hidden" name="amount" value={finalTotal.toFixed(2)} />
                       <input type="hidden" name="item_name" value={`Kasi Street Style Order - ${mPaymentId}`} />
 
-                      <div className="flex gap-4">
-                        <Button type="button" variant="outline" onClick={() => setCheckoutStep(1)} className="font-semibold w-1/3 py-6 h-auto" disabled={isSubmitting}>
+                      <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
+                        <Button type="button" variant="outline" onClick={() => setCheckoutStep(1)} className="font-semibold w-full sm:w-1/3 py-4 sm:py-6 h-auto" disabled={isSubmitting}>
                           Back
                         </Button>
-                        <Button type="submit" className="w-2/3 font-bold uppercase tracking-wider py-6 h-auto bg-black hover:bg-black/90 text-white" disabled={isSubmitting || !merchantId || !merchantKey}>
+                        <Button type="submit" className="w-full sm:w-2/3 font-bold uppercase tracking-wider py-4 sm:py-6 h-auto text-sm sm:text-base bg-black hover:bg-black/90 text-white" disabled={isSubmitting || !merchantId || !merchantKey}>
                           {isSubmitting ? (
                             <span className="flex items-center gap-2 justify-center">
                               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

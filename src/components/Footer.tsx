@@ -13,9 +13,9 @@ const PaymentBadge = ({ children, label }: { children: React.ReactNode; label: s
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-black text-white mt-12 sm:mt-16">
+      <div className="container max-w-7xl py-10 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
             <h3 className="text-xl font-bold mb-4">Kasi SA Streetwear</h3>

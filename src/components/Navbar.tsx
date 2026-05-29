@@ -18,11 +18,11 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border/40">
-      <div className="container mx-auto flex items-center justify-between py-6 px-6">
-        <Link to="/">
-          <img src={kasiLogo} alt="Kasi SA Streetwear" className="h-24 hover:opacity-80 transition-opacity" />
+      <div className="container mx-auto flex h-[var(--navbar-height)] min-w-0 items-center justify-between gap-2">
+        <Link to="/" className="shrink-0">
+          <img src={kasiLogo} alt="Kasi SA Streetwear" className="h-10 w-auto sm:h-11 md:h-12 hover:opacity-80 transition-opacity" />
         </Link>
-        <div className="hidden md:flex items-center gap-10 text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-10 text-[10px] xl:text-xs font-medium tracking-[0.15em] xl:tracking-[0.2em] uppercase text-muted-foreground">
           <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
           <Link to="/shop" className="hover:text-foreground transition-colors">Shop</Link>
           <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
@@ -31,7 +31,7 @@ const Navbar = () => {
             <Link to="/orders" className="hover:text-foreground transition-colors">Orders</Link>
           </Show>
         </div>
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3">
           {/* Cart Icon — always visible on all screen sizes */}
           <Link
             to="/cart"
@@ -46,7 +46,7 @@ const Navbar = () => {
           </Link>
 
           {/* Auth Menu — desktop only */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <Show when="signed-out">
               <SignInButton mode="modal">
                 <Button variant="ghost" size="sm" className="text-xs">
@@ -65,13 +65,13 @@ const Navbar = () => {
           </div>
 
           {/* Hamburger menu — mobile only */}
-          <button className="md:hidden p-2 hover:bg-secondary rounded-lg transition-colors" onClick={() => setOpen(!open)}>
+          <button type="button" aria-label={open ? "Close menu" : "Open menu"} className="lg:hidden p-2 hover:bg-secondary rounded-lg transition-colors" onClick={() => setOpen(!open)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
       {open && (
-        <div className="md:hidden border-t border-border px-6 py-6 flex flex-col gap-4 text-sm font-medium tracking-[0.15em] uppercase bg-background">
+        <div className="lg:hidden border-t border-border px-4 sm:px-6 py-4 max-h-[calc(100dvh-var(--navbar-height))] overflow-y-auto flex flex-col gap-4 text-sm font-medium tracking-[0.15em] uppercase bg-background">
           <Link to="/" onClick={() => setOpen(false)}>Home</Link>
           <Link to="/shop" onClick={() => setOpen(false)}>Shop</Link>
           <Link to="/about" onClick={() => setOpen(false)}>About</Link>

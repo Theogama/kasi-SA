@@ -63,9 +63,9 @@ const Cart = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="pt-32 pb-20">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-4xl md:text-5xl font-heading mb-4">Your Cart is Empty</h1>
+        <div className="pt-navbar pb-16 sm:pb-20">
+          <div className="container mx-auto text-center">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading mb-4">Your Cart is Empty</h1>
             <p className="text-muted-foreground mb-8">Let's find something amazing for you.</p>
             <Link to="/">
               <Button size="lg">Continue Shopping</Button>
@@ -80,9 +80,9 @@ const Cart = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-24 pb-20">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-heading mb-12">Shopping Cart</h1>
+      <div className="pt-navbar pb-16 sm:pb-20">
+        <div className="container mx-auto">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading mb-8 sm:mb-12">Shopping Cart</h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
@@ -90,10 +90,11 @@ const Cart = () => {
               <div className="space-y-6">
                 {items.map((item) => (
                   <div
-                    key={item.id}
-                    className="flex gap-4 p-4 border border-border rounded-lg hover:border-foreground transition-colors"
+                    key={`${item.id}-${item.size ?? ""}`}
+                    className="flex flex-col sm:flex-row gap-4 p-4 border border-border rounded-lg hover:border-foreground transition-colors"
                   >
-                    <div className="w-24 h-32 bg-secondary flex-shrink-0 rounded-md flex items-center justify-center overflow-hidden">
+                    <div className="flex gap-4 min-w-0 flex-1">
+                    <div className="w-20 h-28 sm:w-24 sm:h-32 bg-secondary flex-shrink-0 rounded-md flex items-center justify-center overflow-hidden">
                       <img
                         src={item.frontImage}
                         alt={item.name}
@@ -101,8 +102,8 @@ const Cart = () => {
                       />
                     </div>
 
-                    <div className="flex-grow">
-                      <h3 className="font-medium text-sm uppercase tracking-[0.1em]">{item.name}</h3>
+                    <div className="flex-grow min-w-0">
+                      <h3 className="font-medium text-sm uppercase tracking-[0.1em] line-clamp-2">{item.name}</h3>
                       <p className="text-muted-foreground text-sm mt-1">{item.price}</p>
                       {item.size && (
                         <p className="text-xs text-muted-foreground mt-2">Size: {item.size}</p>
@@ -124,8 +125,9 @@ const Cart = () => {
                         </button>
                       </div>
                     </div>
+                    </div>
 
-                    <div className="flex flex-col items-end justify-between">
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-between gap-2 sm:gap-0 border-t sm:border-t-0 border-border/50 pt-3 sm:pt-0">
                       <button
                         onClick={() => removeFromCart(item.id, item.size)}
                         className="p-2 hover:bg-destructive/10 hover:text-destructive rounded transition-colors"
@@ -150,7 +152,7 @@ const Cart = () => {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="border border-border rounded-lg p-6 sticky top-24">
+              <div className="border border-border rounded-lg p-4 sm:p-6 lg:sticky lg:sticky-below-nav lg:self-start">
                 <h2 className="text-xl font-heading mb-6">Order Summary</h2>
 
                 <div className="space-y-4 mb-6 pb-6 border-b border-border">

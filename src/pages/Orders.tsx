@@ -47,17 +47,17 @@ const Orders = () => {
       }
     };
 
-    if (isLoaded && isSignedIn) {
+    if (user) {
       loadOrders();
     }
-  }, [isLoaded, isSignedIn, user]);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-24 pb-20">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <h1 className="text-4xl md:text-5xl font-heading mb-3">My Orders</h1>
+      <div className="pt-navbar pb-16 sm:pb-20">
+        <div className="container mx-auto max-w-5xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading mb-3">My Orders</h1>
           <p className="text-muted-foreground mb-10">Track your payments and delivery progress.</p>
 
           {loading && (
@@ -97,7 +97,7 @@ const Orders = () => {
               {orders.map((order) => (
                 <Card key={order.id}>
                   <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                    <CardTitle className="text-xl">Order {order.order_number}</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl break-all">Order {order.order_number}</CardTitle>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className={statusClass(order.payment_status)}>
                         Payment: {order.payment_status}

@@ -88,18 +88,18 @@ const ProductGrid = () => {
   const usingFallbackCatalog = !loading && !error && catalogSource === "fallback";
 
   return (
-    <section id="shop" className="py-28">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10">
-          <div className="mb-8 md:mb-0">
-            <p className="text-xs font-medium tracking-[0.3em] uppercase text-muted-foreground mb-2">
+    <section id="shop" className="py-16 sm:py-20 md:py-28">
+      <div className="container mx-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 sm:mb-10">
+          <div>
+            <p className="text-[10px] sm:text-xs font-medium tracking-[0.2em] sm:tracking-[0.3em] uppercase text-muted-foreground mb-2">
               New Arrivals
             </p>
-            <h2 className="text-5xl md:text-6xl font-heading">The Drop</h2>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-heading">The Drop</h2>
           </div>
           <a
             href="#"
-            className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors hidden md:block"
+            className="text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors hidden sm:block shrink-0"
           >
             View All →
           </a>
@@ -136,14 +136,12 @@ const ProductGrid = () => {
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="flex justify-center">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-10 max-w-7xl w-full justify-items-center">
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 w-full">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="w-full max-w-[320px]">
+                <div key={product.id} className="w-full min-w-0">
                   <ProductCard {...product} />
                 </div>
               ))}
-            </div>
           </div>
         ) : (
           <div className="text-center py-20">

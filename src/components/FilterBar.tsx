@@ -19,14 +19,14 @@ interface FilterBarProps {
 
 const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
       <Select
         value={filters.color || "all"}
         onValueChange={(value) =>
           onFilterChange({ ...filters, color: value === "all" ? undefined : value })
         }
       >
-        <SelectTrigger className="w-full sm:w-40">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Color" />
         </SelectTrigger>
         <SelectContent>
@@ -42,7 +42,7 @@ const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
           onFilterChange({ ...filters, priceRange: value === "all" ? undefined : value })
         }
       >
-        <SelectTrigger className="w-full sm:w-40">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Price" />
         </SelectTrigger>
         <SelectContent>
@@ -59,7 +59,7 @@ const FilterBar = ({ filters, onFilterChange }: FilterBarProps) => {
           onFilterChange({ ...filters, sortBy: value })
         }
       >
-        <SelectTrigger className="w-full sm:w-40">
+        <SelectTrigger className="w-full min-[400px]:col-span-2 sm:col-span-1">
           <SelectValue placeholder="Sort By" />
         </SelectTrigger>
         <SelectContent>
