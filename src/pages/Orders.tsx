@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth, useUser } from "@clerk/react";
-import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,18 +22,10 @@ const statusClass = (status: string) => {
 };
 
 const Orders = () => {
-  const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
-  const navigate = useNavigate();
   const [orders, setOrders] = useState<UserOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      navigate("/");
-    }
-  }, [isLoaded, isSignedIn, navigate]);
 
   useEffect(() => {
     const loadOrders = async () => {

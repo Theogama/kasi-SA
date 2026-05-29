@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth, useUser } from "@clerk/react";
+import { useUser } from "@clerk/react";
 import { useCart } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -49,10 +48,8 @@ import {
 } from "@/lib/shippingCarriers";
 
 const Checkout = () => {
-  const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
   const { items, totalPrice } = useCart();
-  const navigate = useNavigate();
 
   // Step state: 1 = Shipping & Carrier, 2 = Payment Review
   const [checkoutStep, setCheckoutStep] = useState<1 | 2>(1);
@@ -89,19 +86,6 @@ const Checkout = () => {
       setShippingPhone(user.primaryPhoneNumber?.phoneNumber || "");
     }
   }, [user]);
-
-  // Route protection
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      navigate("/"); 
-    }
-  }, [isSignedIn, isLoaded, navigate]);
-
-  useEffect(() => {
-    if (isLoaded && isSignedIn && items.length === 0) {
-      navigate("/cart");
-    }
-  }, [isLoaded, isSignedIn, items.length, navigate]);
 
   // Cart total calculations
   const shippingCost = useMemo(() => {
@@ -148,15 +132,13 @@ const Checkout = () => {
 
   const mPaymentId = useMemo(() => `ORD-${Date.now()}`, []);
 
-  if (!isLoaded || !user) {
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <p className="animate-pulse text-lg font-medium">Loading secure checkout...</p>
       </div>
     );
   }
-
-  if (items.length === 0) return null;
 
   // Payfast environment configuration
   const merchantId = import.meta.env.VITE_PAYFAST_MERCHANT_ID;
