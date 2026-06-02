@@ -59,6 +59,18 @@ INSERT INTO products (
   100,
   'black',
   ARRAY['100% Premium Cotton', 'Oversized Fit', 'Machine Washable', 'High-Quality Print', 'Comfortable & Breathable']
+),
+(
+  'a0000004-0004-4000-8000-000000000004',
+  'From the Kasi Tee — White',
+  'Clean white tee with a bold Kasi back graphic — made for everyday wear with premium comfort.',
+  450.00,
+  '/products/tee-white-front.png',
+  '/products/kasi-wheelbarrow-tee-back.png',
+  ARRAY['XS', 'S', 'M', 'L', 'XL', '2XL'],
+  100,
+  'white',
+  ARRAY['100% Premium Cotton', 'Oversized Fit', 'Machine Washable', 'High-Quality Print', 'Comfortable & Breathable']
 )
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,

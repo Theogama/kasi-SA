@@ -88,6 +88,25 @@ const FALLBACK_PRODUCTS: DbProduct[] = [
       "Comfortable & Breathable",
     ],
   },
+  {
+    id: "a0000004-0004-4000-8000-000000000004",
+    name: "From the Kasi Tee — White",
+    description:
+      "Clean white tee with a bold Kasi back graphic — made for everyday wear with premium comfort.",
+    price: 450,
+    image_url_front: "/products/tee-white-front.png",
+    image_url_back: "/products/kasi-wheelbarrow-tee-back.png",
+    sizes: ["XS", "S", "M", "L", "XL", "2XL"],
+    stock_quantity: 100,
+    color: "white",
+    details: [
+      "100% Premium Cotton",
+      "Oversized Fit",
+      "Machine Washable",
+      "High-Quality Print",
+      "Comfortable & Breathable",
+    ],
+  },
 ];
 
 const DEFAULT_SIZES = ["XS", "S", "M", "L", "XL", "2XL"];
