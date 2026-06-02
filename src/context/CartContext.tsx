@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { cartLineKey, parsePriceLabel } from "@/lib/products";
+import { cartItemHasSize, cartLineKey, parsePriceLabel } from "@/lib/products";
 
 export interface CartItem {
   id: string;
@@ -16,10 +16,12 @@ interface CartContextType {
   addToCart: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeFromCart: (productId: string, size?: string) => void;
   updateQuantity: (productId: string, quantity: number, size?: string) => void;
+  updateItemSize: (productId: string, fromSize: string | undefined, toSize: string) => void;
   clearCart: () => void;
   replaceItems: (items: CartItem[]) => void;
   totalItems: number;
   totalPrice: number;
+  allItemsHaveSize: boolean;
 }
 
 const CART_STORAGE_KEY = "kasi-cart-v2";
@@ -79,6 +81,39 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const updateItemSize = (productId: string, fromSize: string | undefined, toSize: string) => {
+    const trimmed = toSize.trim();
+    if (!trimmed) return;
+
+    setItems((prevItems) => {
+      const fromKey = cartLineKey(productId, fromSize);
+      const toKey = cartLineKey(productId, trimmed);
+      const source = prevItems.find((i) => cartLineKey(i.id, i.size) === fromKey);
+      if (!source) return prevItems;
+
+      if (fromKey === toKey) {
+        return prevItems.map((i) =>
+          cartLineKey(i.id, i.size) === fromKey ? { ...i, size: trimmed } : i
+        );
+      }
+
+      const target = prevItems.find((i) => cartLineKey(i.id, i.size) === toKey);
+      if (target) {
+        return prevItems
+          .map((i) =>
+            cartLineKey(i.id, i.size) === toKey
+              ? { ...i, quantity: i.quantity + source.quantity }
+              : i
+          )
+          .filter((i) => cartLineKey(i.id, i.size) !== fromKey);
+      }
+
+      return prevItems.map((i) =>
+        cartLineKey(i.id, i.size) === fromKey ? { ...i, size: trimmed } : i
+      );
+    });
+  };
+
   const clearCart = () => {
     setItems([]);
     localStorage.removeItem(CART_STORAGE_KEY);
@@ -95,15 +130,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sum + price * item.quantity;
   }, 0);
 
+  const allItemsHaveSize = items.length > 0 && items.every((item) => cartItemHasSize(item.size));
+
   const value: CartContextType = {
     items,
     addToCart,
     removeFromCart,
     updateQuantity,
+    updateItemSize,
     clearCart,
     replaceItems,
     totalItems,
     totalPrice,
+    allItemsHaveSize,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

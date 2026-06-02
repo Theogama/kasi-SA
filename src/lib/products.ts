@@ -109,7 +109,7 @@ const FALLBACK_PRODUCTS: DbProduct[] = [
   },
 ];
 
-const DEFAULT_SIZES = ["XS", "S", "M", "L", "XL", "2XL"];
+export const DEFAULT_SIZES = ["XS", "S", "M", "L", "XL", "2XL"];
 
 const DEFAULT_DETAILS = [
   "100% Premium Cotton",
@@ -153,6 +153,8 @@ export const mapDbProduct = (row: DbProduct): StoreProduct => {
 
 export const cartLineKey = (productId: string, size?: string) =>
   size ? `${productId}::${size}` : productId;
+
+export const cartItemHasSize = (size?: string) => Boolean(size?.trim());
 
 export const normalizeProductId = (id: string) => id.trim().toLowerCase();
 

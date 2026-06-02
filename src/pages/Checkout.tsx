@@ -36,7 +36,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { getOrCreateUserIdByEmail, validateCartStock } from "@/lib/orders";
-import { parsePriceLabel } from "@/lib/products";
+import { cartItemHasSize, parsePriceLabel } from "@/lib/products";
 import { 
   CARRIERS, 
   FREE_SHIPPING_THRESHOLD, 
@@ -196,6 +196,14 @@ const Checkout = () => {
 
     if (!validateShippingForm()) return;
 
+    if (items.some((item) => !cartItemHasSize(item.size))) {
+      toast.error("Select a size for each item", {
+        description: "Return to your cart and choose a size before paying.",
+        icon: <AlertCircle size={16} />,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -275,7 +283,7 @@ const Checkout = () => {
         order_id: dbOrder.id,
         product_id: item.id,
         quantity: item.quantity,
-        size: item.size || "M",
+        size: item.size!,
         unit_price: parsePriceLabel(item.price),
       }));
 

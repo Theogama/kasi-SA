@@ -1,17 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import { reconcileCartWithDatabase } from "@/lib/orders";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2, LogIn } from "lucide-react";
+import { Minus, Plus, Trash2, LogIn, AlertCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useClerk } from "@clerk/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
-import { parsePriceLabel } from "@/lib/products";
+import { DEFAULT_SIZES, cartItemHasSize, parsePriceLabel } from "@/lib/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, clearCart, replaceItems, totalPrice } = useCart();
+  const {
+    items,
+    removeFromCart,
+    updateQuantity,
+    updateItemSize,
+    clearCart,
+    replaceItems,
+    totalPrice,
+    allItemsHaveSize,
+  } = useCart();
+  const { products } = useProducts();
   const { isSignedIn } = useAuth();
   const { openSignIn, openSignUp } = useClerk();
   const navigate = useNavigate();
@@ -39,7 +50,28 @@ const Cart = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const sizesByProductId = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const product of products) {
+      map.set(product.id, product.sizes);
+    }
+    return map;
+  }, [products]);
+
+  const getSizesForItem = (productId: string) =>
+    sizesByProductId.get(productId) ?? DEFAULT_SIZES;
+
+  const missingSizeCount = items.filter((item) => !cartItemHasSize(item.size)).length;
+
   const handleCheckout = () => {
+    if (!allItemsHaveSize) {
+      toast.error("Select a size for each item", {
+        description: `${missingSizeCount} item${missingSizeCount === 1 ? "" : "s"} still need a size before checkout.`,
+        icon: <AlertCircle size={16} />,
+      });
+      return;
+    }
+
     if (isSignedIn) {
       navigate("/checkout");
     } else {
@@ -84,6 +116,18 @@ const Cart = () => {
         <div className="container mx-auto">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading mb-8 sm:mb-12">Shopping Cart</h1>
 
+          {!allItemsHaveSize && (
+            <div
+              role="alert"
+              className="mb-6 flex gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm"
+            >
+              <AlertCircle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <p>
+                Please select a size for each item below before proceeding to checkout.
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
@@ -105,9 +149,31 @@ const Cart = () => {
                     <div className="flex-grow min-w-0">
                       <h3 className="font-medium text-sm uppercase tracking-[0.1em] line-clamp-2">{item.name}</h3>
                       <p className="text-muted-foreground text-sm mt-1">{item.price}</p>
-                      {item.size && (
-                        <p className="text-xs text-muted-foreground mt-2">Size: {item.size}</p>
-                      )}
+
+                      <div className="mt-4">
+                        <label className="text-xs font-medium uppercase tracking-wider mb-2 block">
+                          {cartItemHasSize(item.size) ? "Size" : "Select size"}{" "}
+                          {!cartItemHasSize(item.size) && (
+                            <span className="text-destructive normal-case tracking-normal">(required)</span>
+                          )}
+                        </label>
+                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                          {getSizesForItem(item.id).map((size) => (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => updateItemSize(item.id, item.size, size)}
+                              className={`py-2 px-2 border rounded-md font-medium text-xs transition-all ${
+                                item.size === size
+                                  ? "bg-foreground text-background border-foreground"
+                                  : "border-border hover:border-foreground"
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
 
                       <div className="flex items-center gap-2 mt-4">
                         <button
@@ -175,7 +241,18 @@ const Cart = () => {
                   <span>R{totalPrice.toFixed(2)}</span>
                 </div>
 
-                <Button onClick={handleCheckout} className="w-full mb-3">Proceed to Checkout</Button>
+                <Button
+                  onClick={handleCheckout}
+                  className="w-full mb-3"
+                  disabled={!allItemsHaveSize}
+                >
+                  Proceed to Checkout
+                </Button>
+                {!allItemsHaveSize && (
+                  <p className="text-xs text-muted-foreground text-center mb-3 -mt-1">
+                    Select a size for all items to continue
+                  </p>
+                )}
                 <Link to="/" className="block">
                   <Button variant="outline" className="w-full">
                     Continue Shopping

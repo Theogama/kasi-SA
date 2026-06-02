@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/react";
 import { useCart } from "@/context/CartContext";
+import { cartItemHasSize } from "@/lib/products";
 
 const PageLoader = ({ message }: { message: string }) => (
   <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4 text-center">
@@ -54,14 +55,17 @@ export const RequireCart = ({ children }: { children: ReactNode }) => {
     return () => window.clearTimeout(timer);
   }, []);
 
+  const cartReady =
+    items.length > 0 && items.every((item) => cartItemHasSize(item.size));
+
   useEffect(() => {
     if (!ready) return;
-    if (items.length === 0) {
+    if (items.length === 0 || !cartReady) {
       navigate("/cart", { replace: true });
     }
-  }, [ready, items.length, navigate]);
+  }, [ready, items.length, cartReady, navigate]);
 
-  if (!ready || items.length === 0) {
+  if (!ready || !cartReady) {
     return <PageLoader message="Loading your cart..." />;
   }
 
